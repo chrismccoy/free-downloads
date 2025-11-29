@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    /* 
+     * Brutalist Shadows
+     * Hard, non-blurred shadows that create a "pop-out" 3D effect.
+     * Used on cards, buttons, and inputs.
+     */
+    .brutalist-shadow-dark {
+        box-shadow: 8px 8px 0 0 #0f172a;
+    }
+    
+    .brutalist-shadow-sm {
+        box-shadow: 4px 4px 0 0 #0f172a;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-left: 2px solid #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #22d3ee;
+}

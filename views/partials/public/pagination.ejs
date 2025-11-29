@@ -1,0 +1,24 @@
+<% if (pagination.totalPages > 1) { %>
+    <nav class="flex items-center justify-center gap-2 mt-12">
+        
+        <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.currentPage - 1 %><%= typeof searchQuery !== 'undefined' && searchQuery ? `&search=${searchQuery}` : '' %>" class="px-4 py-2 border-2 border-slate-900 bg-white text-slate-900 font-bold hover:bg-cyan-400 uppercase transition-colors">Prev</a>
+        <% } else { %>
+            <button disabled class="px-4 py-2 border-2 border-slate-900 bg-slate-300 text-slate-500 font-bold uppercase cursor-not-allowed">Prev</button>
+        <% } %>
+
+        <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+            <% if (i === pagination.currentPage) { %>
+                <span class="w-10 h-10 flex items-center justify-center border-2 border-slate-900 bg-fuchsia-500 text-white font-bold brutalist-shadow-sm"><%= i %></span>
+            <% } else { %>
+                <a href="?page=<%= i %><%= typeof searchQuery !== 'undefined' && searchQuery ? `&search=${searchQuery}` : '' %>" class="w-10 h-10 flex items-center justify-center border-2 border-slate-900 bg-white text-slate-900 font-bold hover:bg-cyan-400 transition-colors"><%= i %></a>
+            <% } %>
+        <% } %>
+
+        <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.currentPage + 1 %><%= typeof searchQuery !== 'undefined' && searchQuery ? `&search=${searchQuery}` : '' %>" class="px-4 py-2 border-2 border-slate-900 bg-white text-slate-900 font-bold hover:bg-cyan-400 uppercase transition-colors">Next</a>
+        <% } else { %>
+            <button disabled class="px-4 py-2 border-2 border-slate-900 bg-slate-300 text-slate-500 font-bold uppercase cursor-not-allowed">Next</button>
+        <% } %>
+    </nav>
+<% } %>

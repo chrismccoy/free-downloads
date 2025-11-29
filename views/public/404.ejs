@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 // Page Not Found</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body class="bg-slate-200 text-slate-900 font-mono">
+    <div class="flex min-h-screen">
+        
+        <aside class="w-64 bg-slate-100 text-slate-900 h-screen sticky top-0 flex-col justify-between p-6 hidden lg:flex border-r-2 border-slate-900 font-mono overflow-y-auto">
+            <div>
+                <h2 class="text-xl font-bold border-b-2 border-slate-900 pb-4 mb-6 uppercase">
+                    System
+                </h2>
+                <nav>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/" class="flex items-center gap-3 p-2 hover:bg-cyan-400 transition-colors border-2 border-transparent hover:border-slate-900">
+                                <i class="fa-solid fa-house w-5 text-center"></i>
+                                <span class="font-bold uppercase text-sm">Return Home</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="text-xs text-slate-500 mt-8 font-bold">
+                <p>&copy; 2025 Free Templates</p>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col">
+            
+            <%- include('../partials/public/header') %>
+
+            <main class="p-4 md:p-8 flex-1 flex flex-col items-center justify-center">
+                
+                <div class="max-w-2xl w-full bg-white border-2 border-slate-900 brutalist-shadow-dark p-12 text-center">
+                    
+                    <div class="mb-6">
+                        <i class="fa-solid fa-triangle-exclamation text-8xl text-fuchsia-500"></i>
+                    </div>
+
+                    <h1 class="text-6xl md:text-8xl font-extrabold text-slate-900 uppercase leading-none mb-4">
+                        404
+                    </h1>
+                    
+                    <div class="w-16 h-2 bg-slate-900 mx-auto mb-6"></div>
+
+                    <h2 class="text-2xl font-bold uppercase mb-4">Page Not Found</h2>
+                    
+                    <p class="text-slate-600 text-lg mb-8 font-bold">
+                        The resource you are looking for has been moved, deleted, or never existed in this timeline.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="/" class="bg-cyan-400 text-slate-900 px-8 py-4 border-2 border-slate-900 font-bold uppercase hover:bg-cyan-300 transition-colors brutalist-shadow-sm">
+                            <i class="fa-solid fa-house mr-2"></i> Return Home
+                        </a>
+                        <button onclick="history.back()" class="bg-white text-slate-900 px-8 py-4 border-2 border-slate-900 font-bold uppercase hover:bg-slate-100 transition-colors">
+                            &larr; Go Back
+                        </button>
+                    </div>
+
+                </div>
+
+            </main>
+
+	    <%- include('../partials/public/footer') %>
+
+        </div>
+    </div>
+</body>
+</html>

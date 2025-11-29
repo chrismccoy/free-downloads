@@ -1,0 +1,15 @@
+services:
+  app:
+    container_name: free_downloads_system
+    build: .
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./db:/app/db
+
+      - ./public/uploads:/app/public/uploads
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
