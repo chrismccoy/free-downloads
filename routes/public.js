@@ -7,19 +7,28 @@ const router = express.Router();
 const pub = require('../controllers/publicController');
 
 /**
- * Homepage Route
+ * Homepage Route and Pagination
  */
 router.get('/', pub.showHome);
+router.get('/page/:page', pub.showHome);
 
 /**
- * Category Archive Route
+ * Search Routes and Pagination
+ */
+router.get('/search/:query', pub.showSearch);
+router.get('/search/:query/page/:page', pub.showSearch);
+
+/**
+ * Category Archive and Pagination
  */
 router.get('/category/:slug', pub.showCategoryArchive);
+router.get('/category/:slug/page/:page', pub.showCategoryArchive);
 
 /**
- * Tag Archive Route
+ * Tag Archive and Pagination
  */
-router.get('/tag/:tag', pub.showTagArchive); 
+router.get('/tag/:tag', pub.showTagArchive);
+router.get('/tag/:tag/page/:page', pub.showTagArchive);
 
 /**
  * Single Item Detail Route

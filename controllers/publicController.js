@@ -16,8 +16,8 @@ const ITEMS_PER_PAGE = parseInt(process.env.ITEMS_PER_PAGE) || 9;
  * Data Helper
  * 
  * Since the database is JSON-based, we simulate a SQL JOIN here.
- * 
- * It attaches:
+ *
+ * It Attaches:
  * 1. Thumbnail: The first image from the Detail record.
  * 2. Category: The full category object matched by ID.
  */
@@ -36,29 +36,67 @@ const enrichItems = async (items) => {
 };
 
 /**
+ * Determine Page Number
+ */
+const getPageNumber = (req) => {
+    return parseInt(req.params.page) || parseInt(req.query.page) || 1;
+};
+
+/**
  * Renders the Homepage.
  */
 const showHome = asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const search = req.query.search || '';
+    if (req.query.search) {
+        const cleanQuery = req.query.search.trim();
+        // If empty, just go home
+        if (!cleanQuery) return res.redirect('/');
+        return res.redirect(`/search/${encodeURIComponent(cleanQuery)}`);
+    }
 
-    // Fetch raw data based on filters
+    const page = getPageNumber(req);
+
     const result = await itemService.getPublicItems({ 
         page, 
         limit: ITEMS_PER_PAGE,
-        search 
+        search: '' 
     });
     
     result.data = await enrichItems(result.data);
     const categories = await categoryService.getAllCategories();
   
-    // Render View
     res.render('public/index', { 
         items: result.data, 
         pagination: result.meta, 
         categories,
-        searchQuery: search,
-        pageTitle: search ? `Search: "${search}"` : 'All Templates'
+        searchQuery: '',
+        pageTitle: 'All Templates',
+        paginationBase: '' 
+    });
+});
+
+/**
+ * Renders Search Results
+ */
+const showSearch = asyncHandler(async (req, res) => {
+    const page = getPageNumber(req);
+    const query = req.params.query;
+
+    const result = await itemService.getPublicItems({ 
+        page, 
+        limit: ITEMS_PER_PAGE,
+        search: query 
+    });
+    
+    result.data = await enrichItems(result.data);
+    const categories = await categoryService.getAllCategories();
+  
+    res.render('public/index', { 
+        items: result.data, 
+        pagination: result.meta, 
+        categories,
+        searchQuery: query, // Keeps input filled
+        pageTitle: `Search: "${query}"`,
+        paginationBase: `/search/${encodeURIComponent(query)}` 
     });
 });
 
@@ -67,13 +105,18 @@ const showHome = asyncHandler(async (req, res) => {
  */
 const showCategoryArchive = asyncHandler(async (req, res) => {
     const { slug } = req.params;
-    const page = parseInt(req.query.page) || 1;
+    const page = getPageNumber(req);
 
     const categories = await categoryService.getAllCategories();
     const category = categories.find(c => c.slug === slug);
     
     // Handle invalid category URLs
-    if (!category) return res.status(404).render('public/404', { title: 'Category Not Found', message: 'Category does not exist.' });
+    if (!category) {
+        return res.status(404).render('public/404', { 
+            title: 'Category Not Found', 
+            message: 'Category does not exist.' 
+        });
+    }
 
     const result = await itemService.getPublicItems({ 
         page, 
@@ -87,7 +130,8 @@ const showCategoryArchive = asyncHandler(async (req, res) => {
         category, 
         items: result.data, 
         pagination: result.meta,
-        categories 
+        categories,
+        paginationBase: `/category/${slug}`
     });
 });
 
@@ -96,7 +140,7 @@ const showCategoryArchive = asyncHandler(async (req, res) => {
  */
 const showTagArchive = asyncHandler(async (req, res) => {
     const { tag } = req.params;
-    const page = parseInt(req.query.page) || 1;
+    const page = getPageNumber(req);
 
     const result = await itemService.getPublicItems({ 
         page, 
@@ -111,20 +155,23 @@ const showTagArchive = asyncHandler(async (req, res) => {
         tag, 
         items: result.data, 
         pagination: result.meta,
-        categories 
+        categories,
+        paginationBase: `/tag/${tag}`
     });
 });
 
 /**
  * Renders a single Item Detail page.
- * Fetches the full item record, its details (markdown, images), and context.
  */
 const showItem = asyncHandler(async (req, res) => {
   const { slug } = req.params;
   const item = await itemService.getItemBySlug(slug);
 
   if (!item) {
-      return res.status(404).render('public/404', { title: '404 - Item Not Found', message: `Item '${slug}' not found.` });
+      return res.status(404).render('public/404', { 
+          title: '404 - Item Not Found', 
+          message: `Item '${slug}' not found.` 
+      });
   }
 
   const detail = await detailService.getDetailByItemId(item.id);
@@ -163,6 +210,7 @@ const downloadItem = asyncHandler(async (req, res) => {
 
 module.exports = { 
     showHome, 
+    showSearch,
     showItem, 
     downloadItem, 
     showCategoryArchive,
