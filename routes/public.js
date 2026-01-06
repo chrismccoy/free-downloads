@@ -40,4 +40,9 @@ router.get('/item/:slug', pub.showItem);
  */
 router.get('/item/:slug/download', pub.downloadItem);
 
+/**
+ * Live Preview Route
+ */
+router.get('/item/:slug/preview', pub.showPreview);
+
 module.exports = router;

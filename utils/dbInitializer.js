@@ -15,21 +15,18 @@ const initializeDatabase = async () => {
 
   const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
   const imagesDir = path.join(uploadsDir, 'images');
-  const filesDir = path.join(uploadsDir, 'files'); 
+  const filesDir = path.join(uploadsDir, 'files');
 
   /**
-   * Checks if a directory exists; if not, creates it (including parent folders).
+   * Checks if a directory exists; if not, creates it.
    */
   const ensureDirectory = async (dirPath) => {
     try {
-      // Check if directory exists/is accessible
       await fs.access(dirPath);
     } catch (error) {
-      // ENOENT = Error No Entry (File/Dir not found)
       if (error.code === 'ENOENT') {
         await fs.mkdir(dirPath, { recursive: true });
       } else {
-        // Re-throw permission errors or other FS issues
         throw error;
       }
     }
@@ -43,17 +40,16 @@ const initializeDatabase = async () => {
     await fs.access(dbFilePath);
   } catch (error) {
     if (error.code === 'ENOENT') {
-      const defaultDb = { 
-          items: [], 
-          details: [], 
-          categories: [] 
-      }; 
+      const defaultDb = {
+          items: [],
+          categories: []
+      };
       await fs.writeFile(dbFilePath, JSON.stringify(defaultDb, null, 2));
       console.log('System: Created new database.json');
     }
   }
 
-  // Ensure Upload Directories exist (Public assets)
+  // Ensure Upload Directories exist
   await ensureDirectory(uploadsDir);
   await ensureDirectory(imagesDir);
   await ensureDirectory(filesDir);

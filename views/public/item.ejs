@@ -47,8 +47,8 @@
                             </div>
 
                             <div class="w-full bg-slate-50 flex items-center justify-center overflow-hidden">
-                                <% if (detail && detail.images && detail.images.length > 0) { %>
-                                    <img src="<%= detail.images[0] %>" alt="Main Preview" class="w-full h-auto object-cover object-top" id="main-image">
+                                <% if (item.images && item.images.length > 0) { %>
+                                    <img src="<%= item.images[0] %>" alt="Main Preview" class="w-full h-auto object-cover object-top" id="main-image">
                                 <% } else { %>
                                     <div class="w-full h-96 flex items-center justify-center">
                                         <span class="text-slate-400 font-bold uppercase">No Preview Available</span>
@@ -57,9 +57,9 @@
                             </div>
                         </div>
 
-                        <% if (detail && detail.images && detail.images.length > 1) { %>
+                        <% if (item.images && item.images.length > 1) { %>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <% detail.images.forEach((img, index) => { %>
+                                <% item.images.forEach((img, index) => { %>
                                     <a href="<%= img %>" class="thumb-trigger block border-2 border-slate-900 bg-white p-1 hover:border-cyan-400 transition-colors">
                                         <img src="<%= img %>" alt="View <%= index + 1 %>" class="w-full h-24 object-cover hover:opacity-75 transition-opacity">
                                     </a>
@@ -74,8 +74,8 @@
                                 <%= item.name %>
                             </h1>
                             
-                            <% if (detail && detail.title && detail.title !== item.name) { %>
-                                <h2 class="text-xl md:text-2xl text-slate-500 font-bold uppercase mt-2"><%= detail.title %></h2>
+                            <% if (item.title && item.title !== item.name) { %>
+                                <h2 class="text-xl md:text-2xl text-slate-500 font-bold uppercase mt-2"><%= item.title %></h2>
                             <% } %>
                             
                             <div class="flex flex-wrap items-start gap-3 mt-6">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
 
-                        <% if (detail && detail.filePath) { %>
+                        <% if (item.filePath) { %>
                             <a href="/item/<%= item.slug %>/download" class="flex items-center justify-center gap-4 w-full text-center bg-fuchsia-500 text-white px-8 py-4 border-2 border-slate-900 font-bold hover:bg-fuchsia-600 transition-all hover:translate-x-1 hover:translate-y-1 brutalist-shadow-dark hover:shadow-none uppercase text-xl">
                                 <i class="fa-solid fa-download"></i>
                                 <span>Download Now</span>
@@ -121,23 +121,25 @@
                             </p>
                         </div>
 
-                        <% if (detail) { %>
-                            <div class="prose prose-slate font-mono prose-headings:uppercase prose-headings:font-extrabold prose-a:text-fuchsia-600">
-                                <%- markdown(detail.content) %>
-                            </div>
-                            
-                            <% if (detail.externalLink) { %>
-                                <div class="mt-4">
-                                    <a href="<%= detail.externalLink %>" target="_blank" class="inline-flex items-center gap-2 font-bold uppercase hover:text-cyan-500 border-b-2 border-slate-900 pb-1">
-                                        <i class="fa-solid fa-external-link-alt"></i> Live Preview / External
-                                    </a>
-                                </div>
+                        <div class="prose prose-slate font-mono prose-headings:uppercase prose-headings:font-extrabold prose-a:text-fuchsia-600">
+                            <%- markdown(item.content) %>
+                        </div>
+                        
+                        <% 
+                            const isHtml = item.filePath && item.filePath.endsWith('.html');
+                        %>
+
+                        <div class="mt-4">
+                            <% if (isHtml) { %>
+                                <a href="/item/<%= item.slug %>/preview" target="_blank" class="inline-flex items-center gap-2 font-bold uppercase hover:text-cyan-500 border-b-2 border-slate-900 pb-1">
+                                    <i class="fa-solid fa-desktop"></i> Live Preview
+                                </a>
+                            <% } else if (item.externalLink) { %>
+                                <a href="<%= item.externalLink %>" target="_blank" class="inline-flex items-center gap-2 font-bold uppercase hover:text-cyan-500 border-b-2 border-slate-900 pb-1">
+                                    <i class="fa-solid fa-external-link-alt"></i> External Preview
+                                </a>
                             <% } %>
-                        <% } else { %>
-                            <div class="p-4 border-2 border-dashed border-slate-400 text-slate-500 font-bold text-center">
-                                Details pending...
-                            </div>
-                        <% } %>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -149,9 +151,8 @@
     <script>
         document.querySelectorAll('.thumb-trigger').forEach(thumb => {
             thumb.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevent navigation to the image file
+                e.preventDefault(); 
                 const main = document.getElementById('main-image');
-                // Get the href of the clicked thumbnail (the large image path)
                 if(main) main.src = thumb.getAttribute('href');
             });
         });

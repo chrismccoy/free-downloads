@@ -52,8 +52,8 @@
                                     </div>
 
                                     <div class="w-full h-64 bg-slate-100 flex items-center justify-center overflow-hidden relative">
-                                        <% if (item.thumbnail) { %>
-                                            <img src="<%= item.thumbnail %>" alt="<%= item.name %>" class="w-full h-full object-cover object-top">
+                                        <% if (item.images && item.images.length > 0) { %>
+                                            <img src="<%= item.images[0] %>" alt="<%= item.name %>" class="w-full h-full object-cover object-top">
                                         <% } else { %>
                                             <div class="text-slate-300 text-6xl"><i class="fa-solid fa-image"></i></div>
                                         <% } %>

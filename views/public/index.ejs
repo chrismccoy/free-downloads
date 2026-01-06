@@ -28,7 +28,7 @@
                          <a href="/" class="inline-block mt-4 text-xs font-bold uppercase bg-slate-900 text-white px-3 py-1 hover:bg-red-500">Clear Search</a>
                     <% } else { %>
                         <p class="text-slate-600 text-lg max-w-2xl font-bold">
-                            Free and ready-to-use HTML & CSS templates for your next project.
+                            Free Tailwind templates for your next project.
                         </p>
                     <% } %>
                 </div>
@@ -48,8 +48,8 @@
                                     </div>
 
                                     <div class="w-full h-64 bg-slate-100 flex items-center justify-center overflow-hidden relative">
-                                        <% if (item.thumbnail) { %>
-                                            <img src="<%= item.thumbnail %>" alt="<%= item.name %>" class="w-full h-full object-cover object-top">
+                                        <% if (item.images && item.images.length > 0) { %>
+                                            <img src="<%= item.images[0] %>" alt="<%= item.name %>" class="w-full h-full object-cover object-top">
                                         <% } else { %>
                                             <div class="text-slate-300 text-6xl"><i class="fa-solid fa-image"></i></div>
                                         <% } %>
