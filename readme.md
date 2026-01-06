@@ -1,6 +1,6 @@
 # Free Downloads System
 
-A lightweight, file-based content management system designed for hosting and sharing digital assets. This application features a distinct Neo-Brutalist design powered by **Tailwind CSS**. It uses a local JSON file-based database, eliminating the need for external SQL servers, making it incredibly easy to deploy and maintain.
+A lightweight, file-based content management system designed for hosting and sharing digital assets. This application features a distinct Neo-Brutalist design powered by **Tailwind CSS**. It uses a local SQlite database, eliminating the need for external SQL servers, making it incredibly easy to deploy and maintain.
 
 ## Features
 
