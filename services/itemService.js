@@ -6,6 +6,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const fs = require('fs/promises');
 const db = require('../utils/db');
 const { deleteImage, deleteProductFile } = require('../utils/fileUtils');
 
@@ -233,12 +234,69 @@ const getPublicItems = async (options = {}) => {
   };
 };
 
+/**
+ * Generates a screenshot from an uploaded HTML file using Pageres.
+ * Uses Headless Chrome to render the page and save an image.
+ */
+const generateScreenshot = async (id) => {
+  const itemRaw = await db('items').where({ id }).first();
+  if (!itemRaw) throw new Error('Item not found');
+
+  const item = normalizeItem(itemRaw);
+
+  // Validation
+  if (!item.filePath || !item.filePath.endsWith('.html')) {
+    throw new Error('No HTML file available to generate screenshot');
+  }
+
+  const { default: Pageres } = await import('pageres');
+
+  // URL Construction
+  const port = process.env.PORT || 3000;
+  const sourceUrl = `http://127.0.0.1:${port}${item.filePath}`;
+
+  const destDir = path.join(__dirname, '..', 'public', 'uploads', 'images');
+  const filename = `${uuidv4()}`;
+
+  try {
+    console.log(`System: Generating screenshot for ${sourceUrl}...`);
+
+    await new Pageres({
+      delay: 2,
+      filename: filename,
+      launchOptions: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      }
+    })
+      .source(sourceUrl, ['1280x1024'], { crop: true })
+      .destination(destDir)
+      .run();
+
+    const newImagePath = `/uploads/images/${filename}.png`;
+
+    const updatedImages = [newImagePath, ...item.images];
+
+    await db('items')
+      .where({ id })
+      .update({
+        images: JSON.stringify(updatedImages)
+      });
+
+    return updatedImages;
+
+  } catch (error) {
+    console.error('Screenshot Generation Failed:', error);
+    throw new Error('Failed to generate screenshot. Ensure the app is running locally.');
+  }
+};
+
 module.exports = {
   getAllItems,
   getItemById,
   getItemBySlug,
   createItem,
   updateItem,
+  generateScreenshot,
   deleteItem,
   getPublicItems,
 };

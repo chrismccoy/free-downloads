@@ -197,6 +197,25 @@ const handleDeleteCategory = asyncHandler(async (req, res) => {
   res.redirect('/admin/categories');
 });
 
+/**
+ * Generates a screenshot for an HTML item.
+ * Responds with JSON for AJAX
+ */
+const handleGenerateScreenshot = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Call the screenshot service
+    await itemService.generateScreenshot(id);
+
+    // Respond with JSON so the browser knows it worked without reloading it yet
+    res.json({ success: true, message: 'Screenshot generated successfully' });
+  } catch (error) {
+    // If it fails, send a 500 error and the message
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = {
   showLogin,
   handleLogin,
@@ -206,6 +225,7 @@ module.exports = {
   handleDeleteItem,
   showItemEditor,
   handleUpsertItem,
+  handleGenerateScreenshot,
   showCategories,
   handleAddCategory,
   showEditCategory,

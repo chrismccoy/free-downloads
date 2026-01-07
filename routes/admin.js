@@ -37,6 +37,9 @@ router.get('/item/:id/manage', protect, admin.showItemEditor);
 // Handles the unified upsert (Metadata + Content + Files)
 router.post('/item/:id/upsert', protect, admin.handleUpsertItem);
 
+// Generates a screenshot for an HTML file
+router.post('/items/generate-screenshot/:id', protect, admin.handleGenerateScreenshot);
+
 // Lists all categories
 router.get('/categories', protect, admin.showCategories);
 

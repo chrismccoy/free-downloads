@@ -147,4 +147,58 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- AJAX Screenshot Generation ---
+    const screenshotBtn = document.getElementById('btn-screenshot');
+
+    if (screenshotBtn) {
+        screenshotBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const btn = e.currentTarget;
+            const itemId = btn.dataset.itemId; // Reads data-item-id="<%= item.id %>"
+            const errorContainer = document.getElementById('error-container');
+            const errorMessage = document.getElementById('error-message');
+
+            // Set Loading State (Visual Feedback)
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Generating...';
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.disabled = true;
+
+            try {
+                // Perform AJAX Request
+                const response = await fetch(`/admin/items/generate-screenshot/${itemId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                // Handle Response
+                if (result.success) {
+                    // Success: Refresh to show the new image
+                    window.location.reload();
+                } else {
+                    throw new Error(result.error || 'Unknown Error');
+                }
+
+            } catch (err) {
+                // Handle Error
+                // Reset Button
+                btn.innerHTML = originalText;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.disabled = false;
+
+                // Display Error Message on screen
+                if (errorMessage && errorContainer) {
+                    errorMessage.textContent = err.message;
+                    errorContainer.classList.remove('hidden');
+                } else {
+                    // Fallback if error container is missing
+                    alert(`Error: ${err.message}`);
+                }
+            }
+        });
+    }
 });
